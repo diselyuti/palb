@@ -1,0 +1,6 @@
+export * from '@/types/IProfessor'
+export * from '@/types/ICourse'
+export * from '@/types/ISubject'
+export * from '@/types/IVariant'
+export * from '@/types/IFile'
+export * from '@/types/IDocument'
