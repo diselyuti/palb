@@ -1,6 +1,6 @@
 <template>
   <TransitionRoot as="template" :show="open">
-    <Dialog as="div" class="relative z-10" @close="close">
+    <Dialog as="div" class="relative z-10" @close="emit('close')">
       <TransitionChild
         as="template"
         enter="ease-out duration-300"
@@ -45,7 +45,9 @@ defineProps<{
   open: boolean
 }>()
 
-defineEmits(["close"]);
+const emit = defineEmits<{
+  (e: 'close'): void
+}>()
 </script>
 
 <style scoped lang="scss"></style>

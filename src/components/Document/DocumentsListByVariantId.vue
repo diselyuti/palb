@@ -31,7 +31,7 @@
     </button>
   </div>
 
-  <modal-popup :open="addDocumentPopup">
+  <modal-popup :open="addDocumentPopup" @close="addDocumentPopup = false">
     <template #default>
       <form class="flex flex-col gap-2" @submit.prevent="createNewDocument">
         <label class="block text-sm font-medium leading-6 text-gray-900">

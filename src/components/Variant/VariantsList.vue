@@ -31,7 +31,7 @@
     </button>
   </div>
 
-  <modal-popup :open="addVariantPopup">
+  <modal-popup :open="addVariantPopup" @close="addVariantPopup = false">
     <template #default>
       <form class="flex flex-col gap-2" @submit.prevent="createNewVariant">
         <label for="email" class="block text-sm font-medium leading-6 text-gray-900">

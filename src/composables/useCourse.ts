@@ -6,7 +6,7 @@ import {
   getDocs,
   onSnapshot,
   query,
-  updateDoc,
+  updateDoc
 } from '@firebase/firestore'
 import type { Unsubscribe } from 'firebase/firestore'
 import { db } from '@/firebase'

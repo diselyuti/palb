@@ -31,7 +31,7 @@
     </button>
   </div>
 
-  <modal-popup :open="addProfessorPopup">
+  <modal-popup :open="addProfessorPopup" @close="addProfessorPopup = false">
     <template #default>
       <form class="flex flex-col gap-2" @submit.prevent="createNewProfessor">
         <label for="email" class="block text-sm font-medium leading-6 text-gray-900">

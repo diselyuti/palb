@@ -36,7 +36,7 @@
     </button>
   </div>
 
-  <modal-popup :open="addCoursePopup">
+  <modal-popup :open="addCoursePopup" @close="addCoursePopup = false">
     <template #default>
       <form class="flex flex-col gap-2" @submit.prevent="createNewCourse">
         <label for="email" class="block text-sm font-medium leading-6 text-gray-900">
@@ -73,7 +73,7 @@ import { XCircleIcon } from '@heroicons/vue/24/outline'
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 import ModalPopup from '@/components/common/ModalPopup.vue'
 import useSubject from '@/composables/useSubject'
-import ISubject from '@/types/ISubject'
+import type ISubject from '@/types/ISubject'
 
 const props = defineProps<{
   courseId: string
