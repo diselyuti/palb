@@ -7,7 +7,7 @@ import {
   getDocs,
   onSnapshot,
   query,
-  updateDoc
+  updateDoc, where
 } from '@firebase/firestore'
 import type { Unsubscribe } from 'firebase/firestore'
 import { db } from '@/firebase'
@@ -17,10 +17,26 @@ import {ref} from "vue";
 const useVariant = () => {
   const { deleteDocumentsByVariantId } = useDocument()
   const variants = ref<IVariant[]>([]);
-  let unsubscribe: Unsubscribe | null = null;
+  const variantsByProfessorId = ref<IVariant[]>([]);
+  let _unsubscribeFromVariants: Unsubscribe | null = null;
+  let _unsubscribeFromVariantsByProfessorId: Unsubscribe | null = null;
 
   const getAllVariants = async (): Promise<IVariant[]> => {
     const q = query(collection(db, 'variant'))
+    const querySnapshot = await getDocs(q)
+    const variants: IVariant[] = []
+    querySnapshot.forEach((doc) => {
+      variants.push({
+        id: doc.id,
+        ...doc.data()
+      } as IVariant)
+    })
+
+    return variants
+  }
+
+  const getVariantsByProfessorId = async (professorId: string): Promise<IVariant[]> => {
+    const q = query(collection(db, 'variant'), where('professor_id', '==', professorId))
     const querySnapshot = await getDocs(q)
     const variants: IVariant[] = []
     querySnapshot.forEach((doc) => {
@@ -56,8 +72,17 @@ const useVariant = () => {
     await deleteDoc(doc(db, 'variant', variant.id))
   }
 
+  const deleteVariantsByProfessorId = async (professorId: string) => {
+    const variants = await getVariantsByProfessorId(professorId)
+    const deleting = variants.map(async (variant) => {
+      await deleteVariant(variant)
+    })
+
+    await Promise.all(deleting)
+  }
+
   const subscribeToVariants = async () => {
-    unsubscribe = onSnapshot(collection(db, 'variant'), (snapshot) => {
+    _unsubscribeFromVariants = onSnapshot(collection(db, 'variant'), (snapshot) => {
       variants.value = snapshot.docs.map((doc) => {
         return {
           id: doc.id,
@@ -67,10 +92,29 @@ const useVariant = () => {
     });
   }
 
+  const subscribeToVariantsByProfessorId = async (professorId: string) => {
+    const q = query(collection(db, 'variant'), where('professor_id', '==', professorId))
+    _unsubscribeFromVariantsByProfessorId = onSnapshot(q, (snapshot) => {
+      variantsByProfessorId.value = snapshot.docs.map((doc) => {
+        return {
+          id: doc.id,
+          ...doc.data()
+        } as IVariant
+      })
+    });
+  }
+
   const unsubscribeFromVariants = () => {
-    if (unsubscribe) {
-      unsubscribe();
-      unsubscribe = null;
+    if (_unsubscribeFromVariants) {
+      _unsubscribeFromVariants();
+      _unsubscribeFromVariants = null;
+    }
+  }
+
+  const unsubscribeFromVariantsByProfessorId = () => {
+    if (_unsubscribeFromVariantsByProfessorId) {
+      _unsubscribeFromVariantsByProfessorId();
+      _unsubscribeFromVariantsByProfessorId = null;
     }
   }
 
@@ -78,10 +122,15 @@ const useVariant = () => {
     createVariant,
     updateVariant,
     deleteVariant,
+    deleteVariantsByProfessorId,
     getAllVariants,
+    getVariantsByProfessorId,
     variants,
+    variantsByProfessorId,
     subscribeToVariants,
+    subscribeToVariantsByProfessorId,
     unsubscribeFromVariants,
+    unsubscribeFromVariantsByProfessorId,
   }
 }
 

@@ -8,7 +8,9 @@ import type {Unsubscribe} from "firebase/firestore";
 const useDocument = () => {
   const { deleteFile } = useStorage();
   const documents = ref<IDocument[]>([]);
-  let unsubscribe: Unsubscribe | null = null;
+  const documentsByVariantId = ref<IDocument[]>([]);
+  let _unsubscribeFromDocuments: Unsubscribe | null = null;
+  let _unsubscribeFromDocumentsByVariantId: Unsubscribe | null = null;
   const getAllDocuments = async (): Promise<IDocument[]> => {
     const q = query(collection(db, 'document'))
     const querySnapshot = await getDocs(q)
@@ -77,7 +79,7 @@ const useDocument = () => {
   }
 
   const subscribeToDocuments = async () => {
-    unsubscribe = onSnapshot(collection(db, 'document'), (snapshot) => {
+    _unsubscribeFromDocuments = onSnapshot(collection(db, 'document'), (snapshot) => {
       documents.value = snapshot.docs.map((doc) => {
         return {
           id: doc.id,
@@ -87,10 +89,29 @@ const useDocument = () => {
     })
   }
 
+  const subscribeToDocumentsByVariantId = async (variantId: string) => {
+    const q = query(collection(db, 'document'), where('variant_id', '==', variantId))
+    _unsubscribeFromDocumentsByVariantId = onSnapshot(q, (snapshot) => {
+      documentsByVariantId.value = snapshot.docs.map((doc) => {
+          return {
+          id: doc.id,
+          ...doc.data()
+          } as IDocument
+      })
+    })
+  }
+
   const unsubscribeFromDocuments = () => {
-    if (unsubscribe) {
-      unsubscribe();
-      unsubscribe = null;
+    if (_unsubscribeFromDocuments) {
+      _unsubscribeFromDocuments();
+      _unsubscribeFromDocuments = null;
+    }
+  }
+
+  const unsubscribeFromDocumentsByVariantId = () => {
+    if (_unsubscribeFromDocumentsByVariantId) {
+      _unsubscribeFromDocumentsByVariantId();
+      _unsubscribeFromDocumentsByVariantId = null;
     }
   }
 
@@ -102,8 +123,11 @@ const useDocument = () => {
     getDocumentsByVariantId,
     deleteDocumentsByVariantId,
     subscribeToDocuments,
+    subscribeToDocumentsByVariantId,
     documents,
+    documentsByVariantId,
     unsubscribeFromDocuments,
+    unsubscribeFromDocumentsByVariantId,
   }
 }
 
