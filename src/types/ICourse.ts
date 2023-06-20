@@ -1,4 +1,4 @@
 export default interface ICourse {
-  title: string;
-  id?: string;
+  title: string
+  id?: string
 }

@@ -1,16 +1,26 @@
 import type IDocument from '@/types/IDocument'
-import {addDoc, deleteDoc, collection, getDocs, query, doc, updateDoc, where, onSnapshot} from '@firebase/firestore'
+import {
+  addDoc,
+  deleteDoc,
+  collection,
+  getDocs,
+  query,
+  doc,
+  updateDoc,
+  where,
+  onSnapshot
+} from '@firebase/firestore'
 import { db } from '@/firebase'
 import useStorage from '@/composables/useStorage'
-import {ref} from "vue";
-import type {Unsubscribe} from "firebase/firestore";
+import { ref } from 'vue'
+import type { Unsubscribe } from 'firebase/firestore'
 
 const useDocument = () => {
-  const { deleteFile } = useStorage();
-  const documents = ref<IDocument[]>([]);
-  const documentsByVariantId = ref<IDocument[]>([]);
-  let _unsubscribeFromDocuments: Unsubscribe | null = null;
-  let _unsubscribeFromDocumentsByVariantId: Unsubscribe | null = null;
+  const { deleteFile } = useStorage()
+  const documents = ref<IDocument[]>([])
+  const documentsByVariantId = ref<IDocument[]>([])
+  let _unsubscribeFromDocuments: Unsubscribe | null = null
+  let _unsubscribeFromDocumentsByVariantId: Unsubscribe | null = null
   const getAllDocuments = async (): Promise<IDocument[]> => {
     const q = query(collection(db, 'document'))
     const querySnapshot = await getDocs(q)
@@ -70,12 +80,12 @@ const useDocument = () => {
   }
 
   const deleteDocumentsByVariantId = async (variantId: string) => {
-    const documents = await getDocumentsByVariantId(variantId);
+    const documents = await getDocumentsByVariantId(variantId)
     const deleting = documents.map(async (document) => {
-      await deleteDocument(document);
+      await deleteDocument(document)
     })
 
-    await Promise.all(deleting);
+    await Promise.all(deleting)
   }
 
   const subscribeToDocuments = async () => {
@@ -93,25 +103,25 @@ const useDocument = () => {
     const q = query(collection(db, 'document'), where('variant_id', '==', variantId))
     _unsubscribeFromDocumentsByVariantId = onSnapshot(q, (snapshot) => {
       documentsByVariantId.value = snapshot.docs.map((doc) => {
-          return {
+        return {
           id: doc.id,
           ...doc.data()
-          } as IDocument
+        } as IDocument
       })
     })
   }
 
   const unsubscribeFromDocuments = () => {
     if (_unsubscribeFromDocuments) {
-      _unsubscribeFromDocuments();
-      _unsubscribeFromDocuments = null;
+      _unsubscribeFromDocuments()
+      _unsubscribeFromDocuments = null
     }
   }
 
   const unsubscribeFromDocumentsByVariantId = () => {
     if (_unsubscribeFromDocumentsByVariantId) {
-      _unsubscribeFromDocumentsByVariantId();
-      _unsubscribeFromDocumentsByVariantId = null;
+      _unsubscribeFromDocumentsByVariantId()
+      _unsubscribeFromDocumentsByVariantId = null
     }
   }
 
@@ -127,7 +137,7 @@ const useDocument = () => {
     documents,
     documentsByVariantId,
     unsubscribeFromDocuments,
-    unsubscribeFromDocumentsByVariantId,
+    unsubscribeFromDocumentsByVariantId
   }
 }
 

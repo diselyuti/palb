@@ -7,19 +7,20 @@ import {
   getDocs,
   onSnapshot,
   query,
-  updateDoc, where
+  updateDoc,
+  where
 } from '@firebase/firestore'
 import type { Unsubscribe } from 'firebase/firestore'
 import { db } from '@/firebase'
-import useDocument from "@/composables/useDocument";
-import {ref} from "vue";
+import useDocument from '@/composables/useDocument'
+import { ref } from 'vue'
 
 const useVariant = () => {
   const { deleteDocumentsByVariantId } = useDocument()
-  const variants = ref<IVariant[]>([]);
-  const variantsByProfessorId = ref<IVariant[]>([]);
-  let _unsubscribeFromVariants: Unsubscribe | null = null;
-  let _unsubscribeFromVariantsByProfessorId: Unsubscribe | null = null;
+  const variants = ref<IVariant[]>([])
+  const variantsByProfessorId = ref<IVariant[]>([])
+  let _unsubscribeFromVariants: Unsubscribe | null = null
+  let _unsubscribeFromVariantsByProfessorId: Unsubscribe | null = null
 
   const getAllVariants = async (): Promise<IVariant[]> => {
     const q = query(collection(db, 'variant'))
@@ -89,7 +90,7 @@ const useVariant = () => {
           ...doc.data()
         } as IVariant
       })
-    });
+    })
   }
 
   const subscribeToVariantsByProfessorId = async (professorId: string) => {
@@ -101,20 +102,20 @@ const useVariant = () => {
           ...doc.data()
         } as IVariant
       })
-    });
+    })
   }
 
   const unsubscribeFromVariants = () => {
     if (_unsubscribeFromVariants) {
-      _unsubscribeFromVariants();
-      _unsubscribeFromVariants = null;
+      _unsubscribeFromVariants()
+      _unsubscribeFromVariants = null
     }
   }
 
   const unsubscribeFromVariantsByProfessorId = () => {
     if (_unsubscribeFromVariantsByProfessorId) {
-      _unsubscribeFromVariantsByProfessorId();
-      _unsubscribeFromVariantsByProfessorId = null;
+      _unsubscribeFromVariantsByProfessorId()
+      _unsubscribeFromVariantsByProfessorId = null
     }
   }
 
@@ -130,7 +131,7 @@ const useVariant = () => {
     subscribeToVariants,
     subscribeToVariantsByProfessorId,
     unsubscribeFromVariants,
-    unsubscribeFromVariantsByProfessorId,
+    unsubscribeFromVariantsByProfessorId
   }
 }
 

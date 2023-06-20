@@ -1,5 +1,5 @@
 export default interface IVariant {
-  title: string;
-  professor_id: string;
-  id?: string;
+  title: string
+  professor_id: string
+  id?: string
 }
