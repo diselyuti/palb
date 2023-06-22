@@ -73,7 +73,7 @@ import { XCircleIcon } from '@heroicons/vue/24/outline'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import ModalPopup from '@/components/common/ModalPopup.vue'
 import useVariant from '@/composables/useVariant'
-import IVariant from '@/types/IVariant'
+import type IVariant from '@/types/IVariant'
 
 const props = defineProps<{
   courseId: string
