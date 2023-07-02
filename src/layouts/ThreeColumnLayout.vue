@@ -1,4 +1,5 @@
 <template>
+  <navigation-bread-crumb v-if="pages.length" :pages="pages"/>
   <div class="mx-auto h-full w-full max-w-7xl grow lg:flex xl:px-2">
     <!-- Left sidebar & main wrapper -->
     <div class="flex-1 xl:flex">
@@ -21,6 +22,76 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import NavigationBreadCrumb from "@/components/common/NavigationBreadCrumb.vue";
+import {useRoute} from "vue-router";
+import {computed} from "vue";
+import type IPage from "@/types/IPage";
+
+const route = useRoute();
+
+const pages = computed(() => {
+  const pages: IPage[] =[];
+
+  if (route.params.courseId) {
+    pages.push({
+      name: 'Course',
+      to: {
+        name: 'subject',
+        params: {
+          courseId: route.params.courseId,
+        },
+      },
+    });
+  }
+  if (route.params.subjectId) {
+    pages.push({
+      name: 'Subject',
+      to: {
+        name: 'professor',
+        params: {
+          courseId: route.params.courseId,
+          subjectId: route.params.subjectId,
+        },
+      },
+    });
+  }
+  if (route.params.professorId) {
+    pages.push({
+      name: 'Professor',
+      to: {
+        name: 'variant',
+        params: {
+          courseId: route.params.courseId,
+          subjectId: route.params.subjectId,
+          professorId: route.params.professorId,
+        },
+      },
+    });
+  }
+  return pages;
+  // {
+  //   name: 'Subject',
+  //   to: {
+  //     name: 'subject',
+  //     params: {
+  //       courseId: route.params.courseId,
+  //     },
+  //   },
+  // },
+  // {
+  //   name: 'Professor',
+  //   to: {name: 'professor'},
+  // },
+  // {
+  //   name: 'Variant',
+  //   to: {name: 'variant'},
+  // },
+  // {
+  //   name: 'Document',
+  //   to: {name: 'document'},
+  // }
+});
+</script>
 
 <style scoped lang="scss"></style>

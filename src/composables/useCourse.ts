@@ -17,10 +17,14 @@ import useSubject from '@/composables/useSubject'
 const useCourse = () => {
   const { deleteSubjectsByCourseId } = useSubject()
   const courses = ref<ICourse[]>([])
+  const loadingCourses = ref<boolean>(false);
   let unsubscribe: Unsubscribe | null = null
 
   const getAllCourses = async (): Promise<ICourse[]> => {
     const q = query(collection(db, 'course'))
+
+    loadingCourses.value = true
+
     const querySnapshot = await getDocs(q)
     const courses: ICourse[] = []
     querySnapshot.forEach((doc) => {
@@ -30,13 +34,19 @@ const useCourse = () => {
       } as ICourse)
     })
 
+    loadingCourses.value = false
+
     return courses
   }
 
   const createCourse = async (course: ICourse | null) => {
     if (!course) throw new Error('No course provided')
 
+    loadingCourses.value = true
+
     await addDoc(collection(db, 'course'), course)
+
+    loadingCourses.value = false
   }
 
   const updateCourse = async (course: ICourse | null) => {
@@ -44,17 +54,26 @@ const useCourse = () => {
     if (!course.id) throw new Error('No course id provided')
 
     const courseRef = doc(db, 'course', course.id)
+
+    loadingCourses.value = true
+
     await updateDoc(courseRef, {
       ...course
     })
+
+    loadingCourses.value = false
   }
 
   const deleteCourse = async (course: ICourse | null) => {
     if (!course) throw new Error('No course provided')
     if (!course.id) throw new Error('No course id provided')
 
+    loadingCourses.value = true
+
     await deleteSubjectsByCourseId(course.id)
     await deleteDoc(doc(db, 'course', course.id))
+
+    loadingCourses.value = false
   }
 
   const subscribeToCourses = async () => {
@@ -81,6 +100,7 @@ const useCourse = () => {
     deleteCourse,
     getAllCourses,
     courses,
+    loadingCourses,
     subscribeToCourses,
     unsubscribeFromCourses
   }

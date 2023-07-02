@@ -1,44 +1,49 @@
 <template>
   <div class="flex flex-col gap-2">
-    <h1 class="text-2xl">Professors</h1>
+    <div class="flex justify-between items center">
+      <h1 class="text-2xl">Professors</h1>
+
+      <div class="flex items-center gap-2">
+        <ArrowPathIcon v-show="loadingProfessors" class="w-5 h-5 text-gray-500 animate-spin" aria-hidden="true" />
+        <button
+            @click="addProfessorPopup = true"
+            type="button"
+            class=""
+        >
+          <PlusCircleIcon class="w-5 h-5 text-gray-500" aria-hidden="true" />
+        </button>
+      </div>
+    </div>
+
     <nav class="flex flex-1 flex-col" aria-label="Sidebar">
       <ul role="list" class="-mx-2 space-y-1">
         <router-link
-          v-for="professor in professorsBySubjectId"
+          v-for="professor in sortedProfessorsBySubjectId"
           :key="professor.id"
           :to="{
             name: 'variant',
             params: { courseId: courseId, subjectId: subjectId, professorId: professor.id }
           }"
           :class="[
-            0
-              ? 'bg-gray-50 text-indigo-600'
-              : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
+            'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
             'group flex w-full justify-between items-center gap-x-3 rounded-md p-2 pl-3 text-sm leading-6 font-semibold'
           ]"
           active-class="bg-gray-50 text-indigo-600"
         >
           <span>{{ professor.title }}</span>
           <XCircleIcon
-            @click="deleteProfessor(professor)"
+            @click.prevent="removeProfessor(professor)"
             class="w-5 h-5 text-gray-400 group-hover:text-gray-500 cursor-pointer"
             aria-hidden="true"
           />
         </router-link>
       </ul>
     </nav>
-    <button
-      @click="addProfessorPopup = true"
-      type="button"
-      class="w-full rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-    >
-      Add
-    </button>
   </div>
 
   <modal-popup :open="addProfessorPopup" @close="addProfessorPopup = false">
     <template #default>
-      <form class="flex flex-col gap-2" @submit.prevent="createNewCourse">
+      <form class="flex flex-col gap-2" @submit.prevent="createNewProfessor">
         <label for="email" class="block text-sm font-medium leading-6 text-gray-900">
           <span>Title</span>
           <input
@@ -69,24 +74,35 @@
 </template>
 
 <script setup lang="ts">
-import { XCircleIcon } from '@heroicons/vue/24/outline'
-import { onMounted, onUnmounted, ref, watch } from 'vue'
+import {ArrowPathIcon, PlusCircleIcon, XCircleIcon} from '@heroicons/vue/24/outline'
+import {computed, onMounted, onUnmounted, ref, watch} from 'vue'
 import ModalPopup from '@/components/common/ModalPopup.vue'
 import useProfessor from '@/composables/useProfessor'
 import type IProfessor from '@/types/IProfessor'
+import ListSkeleton from "@/components/common/ListSkeleton.vue";
+import {useRouter} from "vue-router";
 
 const props = defineProps<{
   courseId: string
   subjectId: string
 }>()
 
+const router = useRouter();
+
 const {
   professorsBySubjectId,
+  loadingProfessors,
   subscribeToProfessorsBySubjectId,
   unsubscribeFromProfessorsBySubjectId,
   deleteProfessor,
   createProfessor
 } = useProfessor()
+
+const sortedProfessorsBySubjectId = computed(() => {
+  return [...professorsBySubjectId.value].sort((a, b) => {
+    return a.title.localeCompare(b.title)
+  })
+})
 
 onMounted(() => {
   subscribeToProfessorsBySubjectId(props.subjectId)
@@ -110,16 +126,38 @@ const newProfessor = ref<IProfessor>({
   title: '',
   subject_id: ''
 })
-const createNewCourse = async () => {
+const createNewProfessor = async () => {
   addProfessorPopup.value = false
+
+  loadingProfessors.value = true
+
   await createProfessor({
     ...newProfessor.value,
     subject_id: subjectId.value
   } as IProfessor)
+
+  loadingProfessors.value = false
+
   newProfessor.value = {
     title: '',
     subject_id: ''
   }
+}
+
+const removeProfessor = async (professor: IProfessor) => {
+  loadingProfessors.value = true
+
+  await deleteProfessor(professor)
+
+  loadingProfessors.value = false
+
+  await router.replace({
+    name: 'professor',
+    params: {
+      courseId: props.courseId,
+      subjectId: props.subjectId,
+    }
+  })
 }
 </script>
 

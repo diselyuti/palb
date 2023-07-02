@@ -19,11 +19,15 @@ const useProfessor = () => {
   const { deleteVariantsByProfessorId } = useVariant()
   const professors = ref<IProfessor[]>([])
   const professorsBySubjectId = ref<IProfessor[]>([])
+  const loadingProfessors = ref<boolean>(false)
   let _unsubscribeFromProfessors: Unsubscribe | null = null
   let _unsubscribeFromProfessorsBySubjectId: Unsubscribe | null = null
 
   const getAllProfessors = async (): Promise<IProfessor[]> => {
     const q = query(collection(db, 'professor'))
+
+    loadingProfessors.value = true
+
     const querySnapshot = await getDocs(q)
     const professors: IProfessor[] = []
     querySnapshot.forEach((doc) => {
@@ -32,12 +36,17 @@ const useProfessor = () => {
         ...doc.data()
       } as IProfessor)
     })
+
+    loadingProfessors.value = false
 
     return professors
   }
 
   const getProfessorsBySubjectId = async (subjectId: string): Promise<IProfessor[]> => {
     const q = query(collection(db, 'professor'), where('subject_id', '==', subjectId))
+
+    loadingProfessors.value = true
+
     const querySnapshot = await getDocs(q)
     const professors: IProfessor[] = []
     querySnapshot.forEach((doc) => {
@@ -46,6 +55,8 @@ const useProfessor = () => {
         ...doc.data()
       } as IProfessor)
     })
+
+    loadingProfessors.value = false
 
     return professors
   }
@@ -53,7 +64,11 @@ const useProfessor = () => {
   const createProfessor = async (professor: IProfessor | null) => {
     if (!professor) throw new Error('No professor provided')
 
+    loadingProfessors.value = true
+
     await addDoc(collection(db, 'professor'), professor)
+
+    loadingProfessors.value = false
   }
 
   const updateProfessor = async (professor: IProfessor | null) => {
@@ -61,17 +76,26 @@ const useProfessor = () => {
     if (!professor.id) throw new Error('No professor id provided')
 
     const professorRef = doc(db, 'professor', professor.id)
+
+    loadingProfessors.value = true
+
     await updateDoc(professorRef, {
       ...professor
     })
+
+    loadingProfessors.value = false
   }
 
   const deleteProfessor = async (professor: IProfessor | null) => {
     if (!professor) throw new Error('No professor provided')
     if (!professor.id) throw new Error('No professor id provided')
 
+    loadingProfessors.value = true
+
     await deleteVariantsByProfessorId(professor.id)
     await deleteDoc(doc(db, 'professor', professor.id))
+
+    loadingProfessors.value = false
   }
 
   const deleteProfessorsBySubjectId = async (subjectId: string) => {
@@ -80,7 +104,11 @@ const useProfessor = () => {
       await deleteProfessor(professor)
     })
 
+    loadingProfessors.value = true
+
     await Promise.all(deleting)
+
+    loadingProfessors.value = false
   }
 
   const subscribeToProfessors = async () => {
@@ -129,6 +157,7 @@ const useProfessor = () => {
     getProfessorsBySubjectId,
     professors,
     professorsBySubjectId,
+    loadingProfessors,
     subscribeToProfessors,
     subscribeToProfessorsBySubjectId,
     unsubscribeFromProfessors,

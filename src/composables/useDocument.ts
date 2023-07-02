@@ -21,7 +21,9 @@ const useDocument = () => {
   const documentsByVariantId = ref<IDocument[]>([])
   let _unsubscribeFromDocuments: Unsubscribe | null = null
   let _unsubscribeFromDocumentsByVariantId: Unsubscribe | null = null
+  const loadingDocuments = ref<Boolean>(false)
   const getAllDocuments = async (): Promise<IDocument[]> => {
+    loadingDocuments.value = true
     const q = query(collection(db, 'document'))
     const querySnapshot = await getDocs(q)
     const documents: IDocument[] = []
@@ -32,10 +34,12 @@ const useDocument = () => {
       } as IDocument)
     })
 
+    loadingDocuments.value = false
     return documents
   }
 
   const getDocumentsByVariantId = async (variantId: string): Promise<IDocument[]> => {
+    loadingDocuments.value = true
     const q = query(collection(db, 'document'), where('variant_id', '==', variantId))
     const querySnapshot = await getDocs(q)
     const documents: IDocument[] = []
@@ -46,28 +50,34 @@ const useDocument = () => {
       } as IDocument)
     })
 
+    loadingDocuments.value = false
     return documents
   }
   const createDocument = async (document: IDocument | null) => {
     if (!document) throw new Error('No document provided')
 
+    loadingDocuments.value = true
     await addDoc(collection(db, 'document'), document)
+    loadingDocuments.value = false
   }
 
   const updateDocument = async (document: IDocument | null) => {
     if (!document) throw new Error('No document provided')
     if (!document.id) throw new Error('No document id provided')
 
+    loadingDocuments.value = true
     const documentRef = doc(db, 'document', document.id)
     await updateDoc(documentRef, {
       ...document
     })
+    loadingDocuments.value = false
   }
 
   const deleteDocument = async (document: IDocument | null) => {
     if (!document) throw new Error('No document provided')
     if (!document.id) throw new Error('No document id provided')
 
+    loadingDocuments.value = true
     if (document.file) {
       try {
         await deleteFile(document.file)
@@ -77,15 +87,19 @@ const useDocument = () => {
     }
 
     await deleteDoc(doc(db, 'document', document.id))
+    loadingDocuments.value = false
   }
 
   const deleteDocumentsByVariantId = async (variantId: string) => {
+    loadingDocuments.value = true
+
     const documents = await getDocumentsByVariantId(variantId)
     const deleting = documents.map(async (document) => {
       await deleteDocument(document)
     })
 
     await Promise.all(deleting)
+    loadingDocuments.value = false
   }
 
   const subscribeToDocuments = async () => {
@@ -136,6 +150,7 @@ const useDocument = () => {
     subscribeToDocumentsByVariantId,
     documents,
     documentsByVariantId,
+    loadingDocuments,
     unsubscribeFromDocuments,
     unsubscribeFromDocumentsByVariantId
   }

@@ -19,11 +19,15 @@ const useVariant = () => {
   const { deleteDocumentsByVariantId } = useDocument()
   const variants = ref<IVariant[]>([])
   const variantsByProfessorId = ref<IVariant[]>([])
+  const loadingVariants = ref<boolean>(false)
   let _unsubscribeFromVariants: Unsubscribe | null = null
   let _unsubscribeFromVariantsByProfessorId: Unsubscribe | null = null
 
   const getAllVariants = async (): Promise<IVariant[]> => {
     const q = query(collection(db, 'variant'))
+
+    loadingVariants.value = true
+
     const querySnapshot = await getDocs(q)
     const variants: IVariant[] = []
     querySnapshot.forEach((doc) => {
@@ -32,12 +36,16 @@ const useVariant = () => {
         ...doc.data()
       } as IVariant)
     })
+    loadingVariants.value = false
 
     return variants
   }
 
   const getVariantsByProfessorId = async (professorId: string): Promise<IVariant[]> => {
     const q = query(collection(db, 'variant'), where('professor_id', '==', professorId))
+
+    loadingVariants.value = true
+
     const querySnapshot = await getDocs(q)
     const variants: IVariant[] = []
     querySnapshot.forEach((doc) => {
@@ -46,6 +54,8 @@ const useVariant = () => {
         ...doc.data()
       } as IVariant)
     })
+
+    loadingVariants.value = false
 
     return variants
   }
@@ -53,7 +63,11 @@ const useVariant = () => {
   const createVariant = async (variant: IVariant | null) => {
     if (!variant) throw new Error('No variant provided')
 
+    loadingVariants.value = true
+
     await addDoc(collection(db, 'variant'), variant)
+
+    loadingVariants.value = false
   }
 
   const updateVariant = async (variant: IVariant | null) => {
@@ -61,16 +75,26 @@ const useVariant = () => {
     if (!variant.id) throw new Error('No variant id provided')
 
     const variantRef = doc(db, 'variant', variant.id)
+
+    loadingVariants.value = true
+
     await updateDoc(variantRef, {
       ...variant
     })
+
+    loadingVariants.value = false
   }
 
   const deleteVariant = async (variant: IVariant | null) => {
     if (!variant) throw new Error('No variant provided')
     if (!variant.id) throw new Error('No variant id provided')
+
+    loadingVariants.value = true
+
     await deleteDocumentsByVariantId(variant.id)
     await deleteDoc(doc(db, 'variant', variant.id))
+
+    loadingVariants.value = false
   }
 
   const deleteVariantsByProfessorId = async (professorId: string) => {
@@ -79,7 +103,11 @@ const useVariant = () => {
       await deleteVariant(variant)
     })
 
+    loadingVariants.value = true
+
     await Promise.all(deleting)
+
+    loadingVariants.value = false
   }
 
   const subscribeToVariants = async () => {
@@ -128,6 +156,7 @@ const useVariant = () => {
     getVariantsByProfessorId,
     variants,
     variantsByProfessorId,
+    loadingVariants,
     subscribeToVariants,
     subscribeToVariantsByProfessorId,
     unsubscribeFromVariants,

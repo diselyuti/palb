@@ -1,34 +1,40 @@
 <template>
-  <div class="flex flex-col gap-2">
-    <h1 class="text-2xl">Documents</h1>
-    <nav class="flex flex-1 flex-col" aria-label="Sidebar">
+  <div class="flex flex-col gap-2 h-full">
+    <div class="flex justify-between items center">
+      <h1 class="text-2xl">Documents</h1>
+      <div class="flex items-center gap-2">
+        <ArrowPathIcon v-show="loadingDocuments" class="w-5 h-5 text-gray-500 animate-spin" aria-hidden="true" />
+        <button
+            @click="addDocumentPopup = true"
+            type="button"
+        >
+          <PlusCircleIcon class="w-5 h-5 text-gray-500" aria-hidden="true" />
+        </button>
+      </div>
+
+    </div>
+
+    <nav class="flex flex-1 flex-col" aria-label="Sidebar" v-if="documentsByVariantId.length">
       <ul role="list" class="-mx-2 space-y-1">
-        <li v-for="document in documentsByVariantId" :key="document.title">
-          <div
+        <li v-for="document in sortedDocumentsByVariantId" :key="document.title">
+          <a
+              :href="document.file?.download_url"
+              target="_blank"
             :class="[
-              0
-                ? 'bg-gray-50 text-indigo-600'
-                : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
+              'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
               'group flex w-full justify-between items-center gap-x-3 rounded-md p-2 pl-3 text-sm leading-6 font-semibold'
             ]"
           >
-            <a :href="document.file?.download_url" target="_blank">{{ document.title }}</a>
+            <span>{{ document.title }}</span>
             <XCircleIcon
-              @click="deleteDocument(document)"
+              @click.prevent="deleteDocument(document)"
               class="w-5 h-5 text-gray-400 group-hover:text-gray-500 cursor-pointer"
               aria-hidden="true"
             />
-          </div>
+          </a>
         </li>
       </ul>
     </nav>
-    <button
-      @click="addDocumentPopup = true"
-      type="button"
-      class="w-full rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-    >
-      Add
-    </button>
   </div>
 
   <modal-popup :open="addDocumentPopup" @close="addDocumentPopup = false">
@@ -74,8 +80,8 @@
 </template>
 
 <script setup lang="ts">
-import { XCircleIcon } from '@heroicons/vue/24/outline'
-import { onMounted, onUnmounted, ref, watch } from 'vue'
+import { XCircleIcon, PlusCircleIcon, ArrowPathIcon } from '@heroicons/vue/24/outline'
+import {computed, onMounted, onUnmounted, ref, watch} from 'vue'
 import type IDocument from '@/types/IDocument'
 import useDocument from '@/composables/useDocument'
 import ModalPopup from '@/components/common/ModalPopup.vue'
@@ -90,10 +96,17 @@ const {
   subscribeToDocumentsByVariantId,
   unsubscribeFromDocumentsByVariantId,
   deleteDocument,
-  createDocument
+  createDocument,
+  loadingDocuments,
 } = useDocument()
 
 const { uploadFile } = useStorage()
+
+const sortedDocumentsByVariantId = computed(() => {
+  return [...documentsByVariantId.value].sort((a, b) => {
+    return a.title.localeCompare(b.title)
+  })
+})
 
 onMounted(() => {
   subscribeToDocumentsByVariantId(props.variantId)
@@ -121,6 +134,7 @@ const documentFile = ref<File | null>(null)
 const createNewDocument = async () => {
   addDocumentPopup.value = false
   try {
+    loadingDocuments.value = true
     newDocument.value.file = await uploadFile(documentFile.value)
     await createDocument({
       ...newDocument.value,
@@ -135,6 +149,7 @@ const createNewDocument = async () => {
       file: null
     }
     documentFile.value = null
+    loadingDocuments.value = false
   }
 }
 const onFileChange = (event: Event) => {

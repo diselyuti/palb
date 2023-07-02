@@ -1,41 +1,49 @@
 <template>
   <div class="flex flex-col gap-2">
-    <h1 class="text-2xl">Courses</h1>
+    <div class="flex justify-between items-center">
+      <h1 class="text-2xl">Courses</h1>
+
+      <div class="flex items-center gap-2">
+        <ArrowPathIcon
+          v-show="loadingCourses"
+          class="w-5 h-5 text-gray-500 animate-spin"
+          aria-hidden="true"
+        />
+        <button
+            @click="addCoursePopup = true"
+            type="button"
+            class=""
+        >
+          <PlusCircleIcon class="w-5 h-5 text-gray-500" aria-hidden="true" />
+        </button>
+      </div>
+    </div>
     <nav class="flex flex-1 flex-col" aria-label="Sidebar">
       <ul role="list" class="-mx-2 space-y-1">
         <router-link
-          v-for="course in courses"
+          v-for="course in sortedCourses"
           :key="course.id"
           :to="{
             name: 'subject',
             params: { courseId: course.id }
           }"
           :class="[
-            0
-              ? 'bg-gray-50 text-indigo-600'
-              : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
+            'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
             'group flex w-full justify-between items-center gap-x-3 rounded-md p-2 pl-3 text-sm leading-6 font-semibold'
           ]"
           active-class="bg-gray-50 text-indigo-600"
-          :exact="false"
         >
           <span>{{ course.title }}</span>
           <XCircleIcon
-            @click="deleteCourse(course)"
-            class="w-5 h-5 text-gray-400 group-hover:text-gray-500 cursor-pointer"
+            @click="removeCourse(course)"
+            class="w-5 h-5 text-gray-500 hidden group-hover:block cursor-pointer"
             aria-hidden="true"
           />
         </router-link>
       </ul>
     </nav>
-    <button
-      @click="addCoursePopup = true"
-      type="button"
-      class="w-full rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-    >
-      Add
-    </button>
   </div>
+
 
   <modal-popup :open="addCoursePopup" @close="addCoursePopup = false">
     <template #default>
@@ -70,14 +78,29 @@
 </template>
 
 <script setup lang="ts">
-import { XCircleIcon } from '@heroicons/vue/24/outline'
-import { onMounted, onUnmounted, ref } from 'vue'
+import { XCircleIcon, PlusCircleIcon, ArrowPathIcon } from '@heroicons/vue/24/outline'
+import {computed, onMounted, onUnmounted, ref} from 'vue'
 import ModalPopup from '@/components/common/ModalPopup.vue'
 import useCourse from '@/composables/useCourse'
 import type ICourse from '@/types/ICourse'
+import {useRouter} from "vue-router";
 
-const { courses, subscribeToCourses, unsubscribeFromCourses, deleteCourse, createCourse } =
-  useCourse()
+const router = useRouter()
+
+const {
+  courses,
+  loadingCourses,
+  subscribeToCourses,
+  unsubscribeFromCourses,
+  deleteCourse,
+  createCourse
+} = useCourse();
+
+const sortedCourses = computed(() => {
+  return [...courses.value].sort((a, b) => {
+    return a.title.localeCompare(b.title)
+  })
+})
 
 onMounted(() => {
   subscribeToCourses()
@@ -91,12 +114,21 @@ const addCoursePopup = ref(false)
 const newCourse = ref<ICourse>({
   title: ''
 })
+
 const createNewCourse = async () => {
   addCoursePopup.value = false
   await createCourse(newCourse.value)
   newCourse.value = {
     title: ''
   }
+}
+
+const removeCourse = async (course: ICourse) => {
+  await deleteCourse(course)
+
+  await router.replace({
+    name: 'course',
+  })
 }
 </script>
 
