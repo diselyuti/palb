@@ -1,5 +1,5 @@
 <template>
-  <navigation-bread-crumb v-if="pages.length" :pages="pages"/>
+  <navigation-bread-crumb v-if="pages.length" :pages="pages" />
   <div class="mx-auto h-full w-full max-w-7xl grow lg:flex xl:px-2">
     <!-- Left sidebar & main wrapper -->
     <div class="flex-1 xl:flex">
@@ -23,15 +23,15 @@
 </template>
 
 <script setup lang="ts">
-import NavigationBreadCrumb from "@/components/common/NavigationBreadCrumb.vue";
-import {useRoute} from "vue-router";
-import {computed} from "vue";
-import type IPage from "@/types/IPage";
+import NavigationBreadCrumb from '@/components/common/NavigationBreadCrumb.vue'
+import { useRoute } from 'vue-router'
+import { computed } from 'vue'
+import type IPage from '@/types/IPage'
 
-const route = useRoute();
+const route = useRoute()
 
 const pages = computed(() => {
-  const pages: IPage[] =[];
+  const pages: IPage[] = []
 
   if (route.params.courseId) {
     pages.push({
@@ -39,10 +39,10 @@ const pages = computed(() => {
       to: {
         name: 'subject',
         params: {
-          courseId: route.params.courseId,
-        },
-      },
-    });
+          courseId: route.params.courseId
+        }
+      }
+    })
   }
   if (route.params.subjectId) {
     pages.push({
@@ -51,10 +51,10 @@ const pages = computed(() => {
         name: 'professor',
         params: {
           courseId: route.params.courseId,
-          subjectId: route.params.subjectId,
-        },
-      },
-    });
+          subjectId: route.params.subjectId
+        }
+      }
+    })
   }
   if (route.params.professorId) {
     pages.push({
@@ -64,12 +64,12 @@ const pages = computed(() => {
         params: {
           courseId: route.params.courseId,
           subjectId: route.params.subjectId,
-          professorId: route.params.professorId,
-        },
-      },
-    });
+          professorId: route.params.professorId
+        }
+      }
+    })
   }
-  return pages;
+  return pages
   // {
   //   name: 'Subject',
   //   to: {
@@ -91,7 +91,7 @@ const pages = computed(() => {
   //   name: 'Document',
   //   to: {name: 'document'},
   // }
-});
+})
 </script>
 
 <style scoped lang="scss"></style>

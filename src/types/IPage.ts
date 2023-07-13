@@ -1,4 +1,4 @@
-import type {RouteParamValue} from "vue-router";
+import type { RouteParamValue } from 'vue-router'
 
 export default interface IPage {
   name: string

@@ -11,6 +11,26 @@ const router = createRouter({
       component: SelectCourseView
     },
     {
+      path: '/register',
+      name: 'register',
+      component: () => import('@/views/RegisterView.vue')
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('@/views/LoginView.vue')
+    },
+    {
+      path: '/logout',
+      name: 'logout',
+      component: () => import('@/views/LogoutView.vue')
+    },
+    {
+      path: '/role',
+      name: 'role',
+      component: () => import('@/views/RoleView.vue')
+    },
+    {
       path: '/home',
       name: 'home',
       component: HomeView

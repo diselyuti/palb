@@ -19,7 +19,7 @@
 <script setup lang="ts">
 import ThreeColumnLayout from '@/layouts/ThreeColumnLayout.vue'
 import { useRoute } from 'vue-router'
-import {computed, watch} from 'vue'
+import { computed } from 'vue'
 import ProfessorsListBySubjectId from '@/components/Professor/ProfessorsListBySubjectId.vue'
 import VariantsListByProfessorId from '@/components/Variant/VariantsListByProfessorId.vue'
 

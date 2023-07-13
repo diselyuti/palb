@@ -4,12 +4,12 @@
       <h1 class="text-2xl">Professors</h1>
 
       <div class="flex items-center gap-2">
-        <ArrowPathIcon v-show="loadingProfessors" class="w-5 h-5 text-gray-500 animate-spin" aria-hidden="true" />
-        <button
-            @click="addProfessorPopup = true"
-            type="button"
-            class=""
-        >
+        <ArrowPathIcon
+          v-show="loadingProfessors"
+          class="w-5 h-5 text-gray-500 animate-spin"
+          aria-hidden="true"
+        />
+        <button @click="addProfessorPopup = true" type="button" class="">
           <PlusCircleIcon class="w-5 h-5 text-gray-500" aria-hidden="true" />
         </button>
       </div>
@@ -74,20 +74,19 @@
 </template>
 
 <script setup lang="ts">
-import {ArrowPathIcon, PlusCircleIcon, XCircleIcon} from '@heroicons/vue/24/outline'
-import {computed, onMounted, onUnmounted, ref, watch} from 'vue'
+import { ArrowPathIcon, PlusCircleIcon, XCircleIcon } from '@heroicons/vue/24/outline'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import ModalPopup from '@/components/common/ModalPopup.vue'
 import useProfessor from '@/composables/useProfessor'
 import type IProfessor from '@/types/IProfessor'
-import ListSkeleton from "@/components/common/ListSkeleton.vue";
-import {useRouter} from "vue-router";
+import { useRouter } from 'vue-router'
 
 const props = defineProps<{
   courseId: string
   subjectId: string
 }>()
 
-const router = useRouter();
+const router = useRouter()
 
 const {
   professorsBySubjectId,
@@ -155,7 +154,7 @@ const removeProfessor = async (professor: IProfessor) => {
     name: 'professor',
     params: {
       courseId: props.courseId,
-      subjectId: props.subjectId,
+      subjectId: props.subjectId
     }
   })
 }

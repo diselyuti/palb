@@ -3,23 +3,23 @@
     <div class="flex justify-between items center">
       <h1 class="text-2xl">Documents</h1>
       <div class="flex items-center gap-2">
-        <ArrowPathIcon v-show="loadingDocuments" class="w-5 h-5 text-gray-500 animate-spin" aria-hidden="true" />
-        <button
-            @click="addDocumentPopup = true"
-            type="button"
-        >
+        <ArrowPathIcon
+          v-show="loadingDocuments"
+          class="w-5 h-5 text-gray-500 animate-spin"
+          aria-hidden="true"
+        />
+        <button @click="addDocumentPopup = true" type="button">
           <PlusCircleIcon class="w-5 h-5 text-gray-500" aria-hidden="true" />
         </button>
       </div>
-
     </div>
 
     <nav class="flex flex-1 flex-col" aria-label="Sidebar" v-if="documentsByVariantId.length">
       <ul role="list" class="-mx-2 space-y-1">
         <li v-for="document in sortedDocumentsByVariantId" :key="document.title">
           <a
-              :href="document.file?.download_url"
-              target="_blank"
+            :href="document.file?.download_url"
+            target="_blank"
             :class="[
               'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
               'group flex w-full justify-between items-center gap-x-3 rounded-md p-2 pl-3 text-sm leading-6 font-semibold'
@@ -81,7 +81,7 @@
 
 <script setup lang="ts">
 import { XCircleIcon, PlusCircleIcon, ArrowPathIcon } from '@heroicons/vue/24/outline'
-import {computed, onMounted, onUnmounted, ref, watch} from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import type IDocument from '@/types/IDocument'
 import useDocument from '@/composables/useDocument'
 import ModalPopup from '@/components/common/ModalPopup.vue'
@@ -97,7 +97,7 @@ const {
   unsubscribeFromDocumentsByVariantId,
   deleteDocument,
   createDocument,
-  loadingDocuments,
+  loadingDocuments
 } = useDocument()
 
 const { uploadFile } = useStorage()

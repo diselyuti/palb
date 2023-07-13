@@ -17,7 +17,7 @@ import useSubject from '@/composables/useSubject'
 const useCourse = () => {
   const { deleteSubjectsByCourseId } = useSubject()
   const courses = ref<ICourse[]>([])
-  const loadingCourses = ref<boolean>(false);
+  const loadingCourses = ref<boolean>(false)
   let unsubscribe: Unsubscribe | null = null
 
   const getAllCourses = async (): Promise<ICourse[]> => {

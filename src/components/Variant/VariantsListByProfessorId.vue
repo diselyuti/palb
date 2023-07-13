@@ -4,15 +4,15 @@
       <h1 class="text-2xl">Variants</h1>
 
       <div class="flex items-center gap-2">
-        <ArrowPathIcon v-show="loadingVariants" class="w-5 h-5 text-gray-500 animate-spin" aria-hidden="true" />
-        <button
-            @click="addVariantPopup = true"
-            type="button"
-        >
+        <ArrowPathIcon
+          v-show="loadingVariants"
+          class="w-5 h-5 text-gray-500 animate-spin"
+          aria-hidden="true"
+        />
+        <button @click="addVariantPopup = true" type="button">
           <PlusCircleIcon class="w-5 h-5 text-gray-500" aria-hidden="true" />
         </button>
       </div>
-
     </div>
 
     <nav class="flex flex-1 flex-col" aria-label="Sidebar">
@@ -74,12 +74,12 @@
 </template>
 
 <script setup lang="ts">
-import {XCircleIcon, PlusCircleIcon, ArrowPathIcon} from '@heroicons/vue/24/outline'
+import { XCircleIcon, PlusCircleIcon, ArrowPathIcon } from '@heroicons/vue/24/outline'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import ModalPopup from '@/components/common/ModalPopup.vue'
 import useVariant from '@/composables/useVariant'
 import type IVariant from '@/types/IVariant'
-import {useRouter} from "vue-router";
+import { useRouter } from 'vue-router'
 
 const props = defineProps<{
   courseId: string
@@ -95,7 +95,7 @@ const {
   subscribeToVariantsByProfessorId,
   unsubscribeFromVariantsByProfessorId,
   deleteVariant,
-  createVariant,
+  createVariant
 } = useVariant()
 
 const sortedVariantsByProfessorId = computed(() => {
@@ -157,7 +157,7 @@ const removeVariant = async (variant: IVariant) => {
     params: {
       courseId: props.courseId,
       subjectId: props.subjectId,
-      professorId: props.professorId,
+      professorId: props.professorId
     }
   })
 }

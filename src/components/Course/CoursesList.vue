@@ -9,11 +9,7 @@
           class="w-5 h-5 text-gray-500 animate-spin"
           aria-hidden="true"
         />
-        <button
-            @click="addCoursePopup = true"
-            type="button"
-            class=""
-        >
+        <button @click="addCoursePopup = true" type="button" class="">
           <PlusCircleIcon class="w-5 h-5 text-gray-500" aria-hidden="true" />
         </button>
       </div>
@@ -43,7 +39,6 @@
       </ul>
     </nav>
   </div>
-
 
   <modal-popup :open="addCoursePopup" @close="addCoursePopup = false">
     <template #default>
@@ -79,11 +74,11 @@
 
 <script setup lang="ts">
 import { XCircleIcon, PlusCircleIcon, ArrowPathIcon } from '@heroicons/vue/24/outline'
-import {computed, onMounted, onUnmounted, ref} from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import ModalPopup from '@/components/common/ModalPopup.vue'
 import useCourse from '@/composables/useCourse'
 import type ICourse from '@/types/ICourse'
-import {useRouter} from "vue-router";
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
@@ -94,7 +89,7 @@ const {
   unsubscribeFromCourses,
   deleteCourse,
   createCourse
-} = useCourse();
+} = useCourse()
 
 const sortedCourses = computed(() => {
   return [...courses.value].sort((a, b) => {
@@ -127,7 +122,7 @@ const removeCourse = async (course: ICourse) => {
   await deleteCourse(course)
 
   await router.replace({
-    name: 'course',
+    name: 'course'
   })
 }
 </script>

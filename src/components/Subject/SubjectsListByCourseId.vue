@@ -4,16 +4,15 @@
       <h1 class="text-2xl">Subjects</h1>
 
       <div class="flex items-center gap-2">
-        <ArrowPathIcon v-show="loadingSubjects" class="w-5 h-5 text-gray-500 animate-spin" aria-hidden="true" />
-        <button
-            @click="addCoursePopup = true"
-            type="button"
-            class=""
-        >
+        <ArrowPathIcon
+          v-show="loadingSubjects"
+          class="w-5 h-5 text-gray-500 animate-spin"
+          aria-hidden="true"
+        />
+        <button @click="addCoursePopup = true" type="button" class="">
           <PlusCircleIcon class="w-5 h-5 text-gray-500" aria-hidden="true" />
         </button>
       </div>
-
     </div>
     <nav class="flex flex-1 flex-col" aria-label="Sidebar">
       <ul role="list" class="-mx-2 space-y-1">
@@ -74,19 +73,18 @@
 </template>
 
 <script setup lang="ts">
-import {ArrowPathIcon, PlusCircleIcon, XCircleIcon} from '@heroicons/vue/24/outline'
-import {computed, onMounted, onUnmounted, ref, watch} from 'vue'
+import { ArrowPathIcon, PlusCircleIcon, XCircleIcon } from '@heroicons/vue/24/outline'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import ModalPopup from '@/components/common/ModalPopup.vue'
 import useSubject from '@/composables/useSubject'
 import type ISubject from '@/types/ISubject'
-import ListSkeleton from "@/components/common/ListSkeleton.vue";
-import {useRouter} from "vue-router";
+import { useRouter } from 'vue-router'
 
 const props = defineProps<{
   courseId: string
 }>()
 
-const router = useRouter();
+const router = useRouter()
 
 const {
   subjectsByCourseId,
@@ -153,7 +151,7 @@ const removeSubject = async (subject: ISubject) => {
   await router.replace({
     name: 'subject',
     params: {
-      courseId: props.courseId,
+      courseId: props.courseId
     }
   })
 }
