@@ -29,6 +29,11 @@ const useAuth = () => {
     return signInWithEmailAndPassword(auth, email, password)
   }
 
+  const signInWithGoogle = async () => {
+    const provider = new firebase.auth.GoogleAuthProvider()
+    await firebase.auth().signInWithRedirect(provider);
+  }
+
   const onAuthChanged = (callback: NextOrObserver<User>): void => {
     onAuthStateChanged(auth, callback)
   }
@@ -57,6 +62,7 @@ const useAuth = () => {
   return {
     createUserByEmailAndPassword,
     signInByEmailAndPassword,
+    signInWithGoogle,
     onAuthChanged,
     signOut,
     isSignedIn,

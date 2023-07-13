@@ -92,13 +92,13 @@
           </div>
 
           <div class="mt-6 grid grid-cols-1 gap-4">
-            <a
-              href="#"
+            <button
+              @click='signInWithGoogle'
               class="flex w-full items-center justify-center gap-3 rounded-md bg-white shadow px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1D9BF0]"
             >
               <img src="/icons/google-icon.svg" alt="google icon" class="w-5" />
               <span class="text-black text-sm font-semibold leading-6">Google</span>
-            </a>
+            </button>
           </div>
         </div>
       </div>
@@ -130,7 +130,7 @@ const email = defineInputBinds('email')
 const password = defineInputBinds('password')
 const confirmPassword = defineInputBinds('confirmPassword')
 
-const { createUserByEmailAndPassword, onAuthChanged } = useAuth()
+const { createUserByEmailAndPassword, onAuthChanged, signInWithGoogle } = useAuth()
 const onSubmit = async () => {
   try {
     await createUserByEmailAndPassword(values.email, values.password)
