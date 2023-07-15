@@ -60,9 +60,14 @@
             <img class="h-8 w-auto" src="/icons/hat-face.svg" alt="" />
           </a>
           <div class="flex flex-1 justify-end">
-            <a href="#" class="text-sm font-semibold leading-6 text-gray-900"
-              >Log in <span aria-hidden="true">&rarr;</span></a
+            <router-link
+              v-if="!user"
+              :to="{ name: 'login' }"
+              class="text-sm font-semibold leading-6 text-gray-900"
             >
+              Log in
+              <span aria-hidden="true">&rarr;</span>
+            </router-link>
           </div>
         </div>
         <div class="mt-6 space-y-2">
