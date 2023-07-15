@@ -10,19 +10,20 @@ import { computed, ref } from 'vue'
 import type { IUserClaims } from '@/types/IUserClaims'
 
 const useAuth = () => {
+  const user = ref<User | null>(null)
   const userClaims = ref<IUserClaims | null>(null)
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      const token = await user.getIdTokenResult()
+  onAuthStateChanged(auth, async (userAuth) => {
+    if (userAuth) {
+      user.value = userAuth
+      const token = await userAuth.getIdTokenResult()
       userClaims.value = token.claims as IUserClaims
     } else {
+      user.value = null
       userClaims.value = null
     }
   })
   const createUserByEmailAndPassword = async (email: string, password: string) => {
-    const userCredential = createUserWithEmailAndPassword(auth, email, password)
-    await setUserRole(email, 'viewer')
-    return userCredential
+    return createUserWithEmailAndPassword(auth, email, password)
   }
 
   const signInByEmailAndPassword = async (email: string, password: string) => {
@@ -32,6 +33,10 @@ const useAuth = () => {
   const signInWithGoogle = async () => {
     const provider = new firebase.auth.GoogleAuthProvider()
     await firebase.auth().signInWithRedirect(provider);
+  }
+
+  const googleRedirectResult = async () => {
+    return firebase.auth().getRedirectResult();
   }
 
   const onAuthChanged = (callback: NextOrObserver<User>): void => {
@@ -63,13 +68,15 @@ const useAuth = () => {
     createUserByEmailAndPassword,
     signInByEmailAndPassword,
     signInWithGoogle,
+    googleRedirectResult,
     onAuthChanged,
     signOut,
     isSignedIn,
     setUserRole,
+    user,
     userClaims,
     isAdmin,
-    isModerator
+    isModerator,
   }
 }
 

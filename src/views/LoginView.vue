@@ -107,7 +107,7 @@ const { values, errors, defineInputBinds } = useForm({
 const email = defineInputBinds('email')
 const password = defineInputBinds('password')
 
-const { signInByEmailAndPassword, onAuthChanged, signInWithGoogle } = useAuth()
+const { signInByEmailAndPassword, onAuthChanged, signInWithGoogle, googleRedirectResult } = useAuth()
 const onSubmit = async () => {
   try {
     await signInByEmailAndPassword(values.email, values.password)
@@ -116,11 +116,18 @@ const onSubmit = async () => {
   }
 }
 
+onAuthChanged((user) => {
+  if (user) {
+    router.push({ name: 'course' })
+  }
+})
+
 onMounted(() => {
-  onAuthChanged((user) => {
-    if (user) {
-      router.push({ name: 'course' })
-    }
-  })
+  googleRedirectResult()
+    .then((result) => {
+      if (result.user) {
+        router.push({ name: 'course' })
+      }
+    })
 })
 </script>

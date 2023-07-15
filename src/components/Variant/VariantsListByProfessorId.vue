@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-2">
     <div class="flex justify-between items center">
-      <h1 class="text-2xl">Variants</h1>
+      <h1 class="text-2xl">Варіанти</h1>
 
       <div class="flex items-center gap-2">
         <ArrowPathIcon
@@ -9,9 +9,11 @@
           class="w-5 h-5 text-gray-500 animate-spin"
           aria-hidden="true"
         />
-        <button @click="addVariantPopup = true" type="button">
-          <PlusCircleIcon class="w-5 h-5 text-gray-500" aria-hidden="true" />
-        </button>
+        <is-access-to-add>
+          <button @click="addVariantPopup = true" type="button">
+            <PlusCircleIcon class="w-5 h-5 text-gray-500" aria-hidden="true" />
+          </button>
+        </is-access-to-add>
       </div>
     </div>
 
@@ -31,11 +33,13 @@
           active-class="bg-gray-50 text-indigo-600"
         >
           <span>{{ variant.title }}</span>
-          <XCircleIcon
-            @click="removeVariant(variant)"
-            class="w-5 h-5 text-gray-400 group-hover:text-gray-500 cursor-pointer"
-            aria-hidden="true"
-          />
+          <is-access-to-remove :creator-id='variant.creator_id'>
+            <XCircleIcon
+              @click.prevent="removeVariant(variant)"
+              class="w-5 h-5 text-gray-400 hidden group-hover:text-gray-500 group-hover:block cursor-pointer"
+              aria-hidden="true"
+            />
+          </is-access-to-remove>
         </router-link>
       </ul>
     </nav>
@@ -80,6 +84,8 @@ import ModalPopup from '@/components/common/ModalPopup.vue'
 import useVariant from '@/composables/useVariant'
 import type IVariant from '@/types/IVariant'
 import { useRouter } from 'vue-router'
+import IsAccessToAdd from '@/components/common/IsAccessToAdd.vue'
+import IsAccessToRemove from '@/components/common/IsAccessToRemove.vue'
 
 const props = defineProps<{
   courseId: string

@@ -35,7 +35,7 @@ const pages = computed(() => {
 
   if (route.params.courseId) {
     pages.push({
-      name: 'Course',
+      name: 'Курси',
       to: {
         name: 'subject',
         params: {
@@ -46,7 +46,7 @@ const pages = computed(() => {
   }
   if (route.params.subjectId) {
     pages.push({
-      name: 'Subject',
+      name: 'Предмети',
       to: {
         name: 'professor',
         params: {
@@ -58,7 +58,7 @@ const pages = computed(() => {
   }
   if (route.params.professorId) {
     pages.push({
-      name: 'Professor',
+      name: 'Професори',
       to: {
         name: 'variant',
         params: {

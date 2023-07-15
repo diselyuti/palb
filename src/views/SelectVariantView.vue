@@ -11,7 +11,7 @@
       />
     </template>
     <template #right-column>
-      <h1>Select Variant</h1>
+      <h1>Оберіть варіант</h1>
     </template>
   </three-column-layout>
 </template>

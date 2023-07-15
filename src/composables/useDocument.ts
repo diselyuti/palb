@@ -14,8 +14,10 @@ import { db } from '@/firebase'
 import useStorage from '@/composables/useStorage'
 import { ref } from 'vue'
 import type { Unsubscribe } from 'firebase/firestore'
+import useAuth from '@/composables/useAuth'
 
 const useDocument = () => {
+  const { user } = useAuth()
   const { deleteFile } = useStorage()
   const documents = ref<IDocument[]>([])
   const documentsByVariantId = ref<IDocument[]>([])
@@ -57,7 +59,10 @@ const useDocument = () => {
     if (!document) throw new Error('No document provided')
 
     loadingDocuments.value = true
+
+    document.creator_id = user.value.uid;
     await addDoc(collection(db, 'document'), document)
+
     loadingDocuments.value = false
   }
 

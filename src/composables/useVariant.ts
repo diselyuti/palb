@@ -14,8 +14,10 @@ import type { Unsubscribe } from 'firebase/firestore'
 import { db } from '@/firebase'
 import useDocument from '@/composables/useDocument'
 import { ref } from 'vue'
+import useAuth from '@/composables/useAuth'
 
 const useVariant = () => {
+  const { user } = useAuth()
   const { deleteDocumentsByVariantId } = useDocument()
   const variants = ref<IVariant[]>([])
   const variantsByProfessorId = ref<IVariant[]>([])
@@ -65,6 +67,7 @@ const useVariant = () => {
 
     loadingVariants.value = true
 
+    variant.creator_id = user.value.uid
     await addDoc(collection(db, 'variant'), variant)
 
     loadingVariants.value = false

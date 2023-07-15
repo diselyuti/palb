@@ -1,11 +1,12 @@
 import useAuth from '@/composables/useAuth'
+import { computed } from 'vue'
 
 const useAccess = () => {
   const { isAdmin, isModerator } = useAuth()
 
-  const canDelete = (): boolean => {
+  const canDelete = computed<Boolean>(() => {
     return isAdmin.value || isModerator.value
-  }
+  });
 
   return {
     canDelete

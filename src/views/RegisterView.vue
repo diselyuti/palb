@@ -111,6 +111,7 @@ import { useForm } from 'vee-validate'
 import * as yup from 'yup'
 import useAuth from '@/composables/useAuth'
 import router from '@/router'
+import { onMounted } from 'vue'
 
 const schema = yup.object({
   email: yup.string().required('Required').email('Invalid email'),
@@ -130,7 +131,7 @@ const email = defineInputBinds('email')
 const password = defineInputBinds('password')
 const confirmPassword = defineInputBinds('confirmPassword')
 
-const { createUserByEmailAndPassword, onAuthChanged, signInWithGoogle } = useAuth()
+const { createUserByEmailAndPassword, onAuthChanged, signInWithGoogle, googleRedirectResult } = useAuth()
 const onSubmit = async () => {
   try {
     await createUserByEmailAndPassword(values.email, values.password)
@@ -143,5 +144,14 @@ onAuthChanged((user) => {
   if (user) {
     router.push({ name: 'course' })
   }
+})
+
+onMounted(() => {
+  googleRedirectResult()
+    .then((result) => {
+      if (result.user) {
+        router.push({ name: 'course' })
+      }
+    })
 })
 </script>

@@ -1,16 +1,18 @@
 <template>
   <div class="flex flex-col gap-2 h-full">
     <div class="flex justify-between items center">
-      <h1 class="text-2xl">Documents</h1>
+      <h1 class="text-2xl">Документи</h1>
       <div class="flex items-center gap-2">
         <ArrowPathIcon
           v-show="loadingDocuments"
           class="w-5 h-5 text-gray-500 animate-spin"
           aria-hidden="true"
         />
-        <button @click="addDocumentPopup = true" type="button">
-          <PlusCircleIcon class="w-5 h-5 text-gray-500" aria-hidden="true" />
-        </button>
+        <is-access-to-add>
+          <button @click="addDocumentPopup = true" type="button">
+            <PlusCircleIcon class="w-5 h-5 text-gray-500" aria-hidden="true" />
+          </button>
+        </is-access-to-add>
       </div>
     </div>
 
@@ -26,11 +28,13 @@
             ]"
           >
             <span>{{ document.title }}</span>
-            <XCircleIcon
-              @click.prevent="deleteDocument(document)"
-              class="w-5 h-5 text-gray-400 group-hover:text-gray-500 cursor-pointer"
-              aria-hidden="true"
-            />
+            <is-access-to-remove :creator-id='document.creator_id'>
+              <XCircleIcon
+                @click.prevent="deleteDocument(document)"
+                class="w-5 h-5 text-gray-400 hidden group-hover:text-gray-500 group-hover:block cursor-pointer"
+                aria-hidden="true"
+              />
+            </is-access-to-remove>
           </a>
         </li>
       </ul>
@@ -86,6 +90,8 @@ import type IDocument from '@/types/IDocument'
 import useDocument from '@/composables/useDocument'
 import ModalPopup from '@/components/common/ModalPopup.vue'
 import useStorage from '@/composables/useStorage'
+import IsAccessToAdd from '@/components/common/IsAccessToAdd.vue'
+import IsAccessToRemove from '@/components/common/IsAccessToRemove.vue'
 
 const props = defineProps<{
   variantId: string

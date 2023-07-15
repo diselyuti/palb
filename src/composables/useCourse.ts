@@ -13,9 +13,11 @@ import { db } from '@/firebase'
 import { ref } from 'vue'
 import type ICourse from '@/types/ICourse'
 import useSubject from '@/composables/useSubject'
+import useAuth from '@/composables/useAuth'
 
 const useCourse = () => {
   const { deleteSubjectsByCourseId } = useSubject()
+  const { user } = useAuth();
   const courses = ref<ICourse[]>([])
   const loadingCourses = ref<boolean>(false)
   let unsubscribe: Unsubscribe | null = null
@@ -41,9 +43,11 @@ const useCourse = () => {
 
   const createCourse = async (course: ICourse | null) => {
     if (!course) throw new Error('No course provided')
+    if (!user.value) throw new Error('No user provided')
 
     loadingCourses.value = true
 
+    course.creator_id = user.value.uid;
     await addDoc(collection(db, 'course'), course)
 
     loadingCourses.value = false

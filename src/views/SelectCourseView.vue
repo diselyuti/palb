@@ -4,10 +4,10 @@
       <courses-list />
     </template>
     <template #main>
-      <h1>Select course</h1>
+      <h1>Оберіть курс</h1>
     </template>
     <template #right-column>
-      <h1>Select course</h1>
+      <h1>Оберіть курс</h1>
     </template>
   </three-column-layout>
 </template>

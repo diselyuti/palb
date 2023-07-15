@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-2">
     <div class="flex justify-between items-center">
-      <h1 class="text-2xl">Courses</h1>
+      <h1 class="text-2xl">Курси</h1>
 
       <div class="flex items-center gap-2">
         <ArrowPathIcon
@@ -9,9 +9,11 @@
           class="w-5 h-5 text-gray-500 animate-spin"
           aria-hidden="true"
         />
-        <button @click="addCoursePopup = true" type="button" class="">
-          <PlusCircleIcon class="w-5 h-5 text-gray-500" aria-hidden="true" />
-        </button>
+        <is-access-to-add>
+          <button @click="addCoursePopup = true" type="button" class="">
+            <PlusCircleIcon class="w-5 h-5 text-gray-500" aria-hidden="true" />
+          </button>
+        </is-access-to-add>
       </div>
     </div>
     <nav class="flex flex-1 flex-col" aria-label="Sidebar">
@@ -30,11 +32,13 @@
           active-class="bg-gray-50 text-indigo-600"
         >
           <span>{{ course.title }}</span>
-          <XCircleIcon
-            @click="removeCourse(course)"
-            class="w-5 h-5 text-gray-500 hidden group-hover:block cursor-pointer"
-            aria-hidden="true"
-          />
+          <is-access-to-remove :creator-id='course.creator_id'>
+            <XCircleIcon
+              @click.prevent="removeCourse(course)"
+              class="w-5 h-5 text-gray-500 hidden group-hover:block cursor-pointer"
+              aria-hidden="true"
+            />
+          </is-access-to-remove>
         </router-link>
       </ul>
     </nav>
@@ -79,6 +83,8 @@ import ModalPopup from '@/components/common/ModalPopup.vue'
 import useCourse from '@/composables/useCourse'
 import type ICourse from '@/types/ICourse'
 import { useRouter } from 'vue-router'
+import IsAccessToAdd from '@/components/common/IsAccessToAdd.vue'
+import IsAccessToRemove from '@/components/common/IsAccessToRemove.vue'
 
 const router = useRouter()
 
@@ -91,7 +97,7 @@ const {
   createCourse
 } = useCourse()
 
-const sortedCourses = computed(() => {
+const sortedCourses = computed<ICourse[]>(() => {
   return [...courses.value].sort((a, b) => {
     return a.title.localeCompare(b.title)
   })

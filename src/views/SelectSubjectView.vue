@@ -7,7 +7,7 @@
       <subjects-list-by-course-id :course-id="courseId" />
     </template>
     <template #right-column>
-      <h1>Select subject</h1>
+      <h1>Оберіть предмет</h1>
     </template>
   </three-column-layout>
 </template>

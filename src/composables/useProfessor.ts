@@ -14,8 +14,10 @@ import { db } from '@/firebase'
 import { ref } from 'vue'
 import type IProfessor from '@/types/IProfessor'
 import useVariant from '@/composables/useVariant'
+import useAuth from '@/composables/useAuth'
 
 const useProfessor = () => {
+  const { user } = useAuth()
   const { deleteVariantsByProfessorId } = useVariant()
   const professors = ref<IProfessor[]>([])
   const professorsBySubjectId = ref<IProfessor[]>([])
@@ -66,6 +68,7 @@ const useProfessor = () => {
 
     loadingProfessors.value = true
 
+    professor.creator_id = user.value.uid;
     await addDoc(collection(db, 'professor'), professor)
 
     loadingProfessors.value = false
