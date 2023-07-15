@@ -60,7 +60,7 @@ const useDocument = () => {
 
     loadingDocuments.value = true
 
-    document.creator_id = user.value.uid;
+    document.creator_id = user.value.uid
     await addDoc(collection(db, 'document'), document)
 
     loadingDocuments.value = false

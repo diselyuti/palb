@@ -28,7 +28,7 @@
             ]"
           >
             <span>{{ document.title }}</span>
-            <is-access-to-remove :creator-id='document.creator_id'>
+            <is-access-to-remove :creator-id="document.creator_id">
               <XCircleIcon
                 @click.prevent="deleteDocument(document)"
                 class="w-5 h-5 text-gray-400 hidden group-hover:text-gray-500 group-hover:block cursor-pointer"
@@ -43,21 +43,12 @@
 
   <modal-popup :open="addDocumentPopup" @close="addDocumentPopup = false">
     <template #default>
-      <form class="flex flex-col gap-2" @submit.prevent="createNewDocument">
+      <form class="flex flex-col gap-2" @submit.prevent="createNewDocuments">
         <label class="block text-sm font-medium leading-6 text-gray-900">
-          <span>Title</span>
+          <span>Оберіть файли</span>
           <input
             required
-            v-model="newDocument.title"
-            type="text"
-            name="email"
-            class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-          />
-        </label>
-        <label class="block text-sm font-medium leading-6 text-gray-900">
-          <span>File</span>
-          <input
-            required
+            multiple
             @change="onFileChange"
             type="file"
             class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -131,37 +122,47 @@ watch(
 )
 
 const addDocumentPopup = ref(false)
-const newDocument = ref<IDocument>({
-  variant_id: props.variantId,
-  title: '',
-  file: null
-})
-const documentFile = ref<File | null>(null)
-const createNewDocument = async () => {
+const newDocuments = ref<IDocument[]>([])
+const documentFiles = ref<File[] | null>(null)
+
+const createNewDocuments = async () => {
   addDocumentPopup.value = false
+
+  const creating = documentFiles.value.map(async (file) => {
+    return await createNewDocument(file)
+  })
+
+  loadingDocuments.value = true
+
   try {
-    loadingDocuments.value = true
-    newDocument.value.file = await uploadFile(documentFile.value)
-    await createDocument({
-      ...newDocument.value,
-      variant_id: props.variantId
-    })
+    await Promise.allSettled(creating)
   } catch (e) {
     console.error(e)
   } finally {
-    newDocument.value = {
-      variant_id: props.variantId,
-      title: '',
-      file: null
-    }
-    documentFile.value = null
+    newDocuments.value = []
+    documentFiles.value = null
     loadingDocuments.value = false
+  }
+}
+const createNewDocument = async (file) => {
+  try {
+    let document = {} as IDocument
+    document.title = file.name
+    document.variant_id = props.variantId
+    document.file = await uploadFile(file)
+    await createDocument({
+      ...document
+    })
+    return true
+  } catch (e) {
+    console.error(e)
+    return false
   }
 }
 const onFileChange = (event: Event) => {
   const target = event.target as HTMLInputElement
   if (target.files) {
-    documentFile.value = target.files[0]
+    documentFiles.value = [...target.files]
   }
 }
 </script>
