@@ -1,8 +1,12 @@
 <template>
   <div class="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <router-link :to="{ name: 'course' }" class="w-full flex justify-center">
+      <img src="/icons/hat-face.svg" alt="logo" class="h-10" />
+    </router-link>
+
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
       <h2 class="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-        Create a new account
+        Створити акаунт
       </h2>
     </div>
 
@@ -11,7 +15,7 @@
         <form class="space-y-6" @submit.prevent="onSubmit">
           <div>
             <label for="email" class="block text-sm font-medium leading-6 text-gray-900"
-              >Email address</label
+              >Електронна пошта</label
             >
             <div class="mt-2">
               <input
@@ -23,13 +27,13 @@
                 required
                 class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
-              <div>{{ errors.email }}</div>
+              <div class="text-red-500 text-xs">{{ errors.email }}</div>
             </div>
           </div>
 
           <div>
             <label for="password" class="block text-sm font-medium leading-6 text-gray-900"
-              >Password</label
+              >Пароль</label
             >
             <div class="mt-2">
               <input
@@ -41,13 +45,13 @@
                 required
                 class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
-              <div>{{ errors.password }}</div>
+              <div class="text-red-500 text-xs">{{ errors.password }}</div>
             </div>
           </div>
 
           <div>
             <label for="confirm-password" class="block text-sm font-medium leading-6 text-gray-900"
-              >Confirm password</label
+              >Підтвердіть пароль</label
             >
             <div class="mt-2">
               <input
@@ -59,25 +63,31 @@
                 required
                 class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
-              <div>{{ errors.confirmPassword }}</div>
+              <div class="text-red-500 text-xs">{{ errors.confirmPassword }}</div>
             </div>
           </div>
 
-          <div class="flex items-center justify-between">
-            <div class="text-sm leading-6">
-              <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500"
-                >Forgot password?</a
+          <div class="w-full flex">
+            <p class="text-red-500">{{ errorMessage }}</p>
+          </div>
+
+          <div class="flex flex-col gap-3">
+            <div>
+              <button
+                type="submit"
+                class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
+                Зареєструватися
+              </button>
             </div>
-          </div>
-
-          <div>
-            <button
-              type="submit"
-              class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              Sign in
-            </button>
+            <div>
+              <router-link
+                :to="{ name: 'login' }"
+                class="flex w-full justify-center rounded-md bg-white px-3 py-1.5 text-sm font-semibold leading-6 text-indigo-600 shadow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                Увійти
+              </router-link>
+            </div>
           </div>
         </form>
 
@@ -104,6 +114,7 @@
       </div>
     </div>
   </div>
+  <Footer />
 </template>
 
 <script setup lang="ts">
@@ -111,16 +122,18 @@ import { useForm } from 'vee-validate'
 import * as yup from 'yup'
 import useAuth from '@/composables/useAuth'
 import router from '@/router'
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
+import { AUTH_ERROR_CODES_MAP } from '@/data/AuthErrorCodeMessages'
+import Footer from '@/components/common/DefaultFooter.vue'
 
 const schema = yup.object({
-  email: yup.string().required('Required').email('Invalid email'),
-  password: yup.string().required('Required').min(6, 'Password must be at least 6 characters'),
+  email: yup.string().required('Обов`язкове поле').email('Невірний формат email'),
+  password: yup.string().required('Обов`язкове поле').min(6, 'Мінімум 6 символів'),
   confirmPassword: yup
     .string()
-    .required('Required')
-    .min(6, 'Password must be at least 6 characters')
-    .oneOf([yup.ref('password'), "Passwords don't match"], 'Passwords must match')
+    .required('Обов`язкове поле')
+    .min(6, 'Мінімум 6 символів')
+    .oneOf([yup.ref('password'), "Passwords don't match"], 'Паролі не співпадають')
 })
 
 const { values, errors, defineInputBinds } = useForm({
@@ -131,13 +144,16 @@ const email = defineInputBinds('email')
 const password = defineInputBinds('password')
 const confirmPassword = defineInputBinds('confirmPassword')
 
+const errorMessage = ref<string>('')
+
 const { createUserByEmailAndPassword, onAuthChanged, signInWithGoogle, googleRedirectResult } =
   useAuth()
 const onSubmit = async () => {
   try {
+    errorMessage.value = ''
     await createUserByEmailAndPassword(values.email, values.password)
   } catch (e) {
-    console.log(e)
+    errorMessage.value = AUTH_ERROR_CODES_MAP[e.code] || e.message
   }
 }
 

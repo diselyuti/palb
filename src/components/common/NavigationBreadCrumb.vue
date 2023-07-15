@@ -1,6 +1,6 @@
 <template>
-  <nav class="flex" aria-label="Breadcrumb">
-    <ol role="list" class="w-full flex space-x-4 bg-white px-6 border">
+  <nav class="flex justify-center w-full border bg-white" aria-label="Breadcrumb">
+    <ol role="list" class="w-full max-w-7xl flex space-x-4 px-6">
       <li class="flex">
         <div class="flex items-center">
           <router-link :to="{ name: 'course' }" class="text-gray-400 hover:text-gray-500">
