@@ -24,6 +24,6 @@ export const setRole = functions.https.onCall(async (data, context) => {
 
     return { message: `Role ${role} has been set for user ${email}.` };
   } catch (error) {
-    throw new functions.https.HttpsError('unknown', error.message);
+    throw new functions.https.HttpsError('unknown', JSON.stringify(error));
   }
 });
