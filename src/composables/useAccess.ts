@@ -6,7 +6,7 @@ const useAccess = () => {
 
   const canDelete = computed<Boolean>(() => {
     return isAdmin.value || isModerator.value
-  });
+  })
 
   return {
     canDelete

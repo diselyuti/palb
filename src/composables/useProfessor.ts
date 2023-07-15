@@ -68,7 +68,7 @@ const useProfessor = () => {
 
     loadingProfessors.value = true
 
-    professor.creator_id = user.value.uid;
+    professor.creator_id = user.value.uid
     await addDoc(collection(db, 'professor'), professor)
 
     loadingProfessors.value = false

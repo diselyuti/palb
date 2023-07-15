@@ -93,7 +93,7 @@
 
           <div class="mt-6 grid grid-cols-1 gap-4">
             <button
-              @click='signInWithGoogle'
+              @click="signInWithGoogle"
               class="flex w-full items-center justify-center gap-3 rounded-md bg-white shadow px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1D9BF0]"
             >
               <img src="/icons/google-icon.svg" alt="google icon" class="w-5" />
@@ -131,7 +131,8 @@ const email = defineInputBinds('email')
 const password = defineInputBinds('password')
 const confirmPassword = defineInputBinds('confirmPassword')
 
-const { createUserByEmailAndPassword, onAuthChanged, signInWithGoogle, googleRedirectResult } = useAuth()
+const { createUserByEmailAndPassword, onAuthChanged, signInWithGoogle, googleRedirectResult } =
+  useAuth()
 const onSubmit = async () => {
   try {
     await createUserByEmailAndPassword(values.email, values.password)
@@ -147,11 +148,10 @@ onAuthChanged((user) => {
 })
 
 onMounted(() => {
-  googleRedirectResult()
-    .then((result) => {
-      if (result.user) {
-        router.push({ name: 'course' })
-      }
-    })
+  googleRedirectResult().then((result) => {
+    if (result.user) {
+      router.push({ name: 'course' })
+    }
+  })
 })
 </script>

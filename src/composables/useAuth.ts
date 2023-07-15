@@ -32,11 +32,11 @@ const useAuth = () => {
 
   const signInWithGoogle = async () => {
     const provider = new firebase.auth.GoogleAuthProvider()
-    await firebase.auth().signInWithRedirect(provider);
+    await firebase.auth().signInWithRedirect(provider)
   }
 
   const googleRedirectResult = async () => {
-    return firebase.auth().getRedirectResult();
+    return firebase.auth().getRedirectResult()
   }
 
   const onAuthChanged = (callback: NextOrObserver<User>): void => {
@@ -76,7 +76,7 @@ const useAuth = () => {
     user,
     userClaims,
     isAdmin,
-    isModerator,
+    isModerator
   }
 }
 

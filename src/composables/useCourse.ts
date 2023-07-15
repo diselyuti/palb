@@ -17,7 +17,7 @@ import useAuth from '@/composables/useAuth'
 
 const useCourse = () => {
   const { deleteSubjectsByCourseId } = useSubject()
-  const { user } = useAuth();
+  const { user } = useAuth()
   const courses = ref<ICourse[]>([])
   const loadingCourses = ref<boolean>(false)
   let unsubscribe: Unsubscribe | null = null
@@ -47,7 +47,7 @@ const useCourse = () => {
 
     loadingCourses.value = true
 
-    course.creator_id = user.value.uid;
+    course.creator_id = user.value.uid
     await addDoc(collection(db, 'course'), course)
 
     loadingCourses.value = false

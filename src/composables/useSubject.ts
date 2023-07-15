@@ -68,7 +68,7 @@ const useSubject = () => {
 
     loadingSubjects.value = true
 
-    subject.creator_id = user.value.uid;
+    subject.creator_id = user.value.uid
     await addDoc(collection(db, 'subject'), subject)
 
     loadingSubjects.value = false
