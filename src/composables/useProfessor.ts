@@ -65,6 +65,7 @@ const useProfessor = () => {
 
   const createProfessor = async (professor: IProfessor | null) => {
     if (!professor) throw new Error('No professor provided')
+    if (!user.value) throw new Error('No user logged in')
 
     loadingProfessors.value = true
 

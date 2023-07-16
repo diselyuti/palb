@@ -126,6 +126,7 @@ watch(
 )
 const addCoursePopup = ref(false)
 const newSubject = ref<ISubject>({
+  creator_id: '',
   title: '',
   course_id: ''
 })
@@ -142,6 +143,7 @@ const createNewSubject = async () => {
   loadingSubjects.value = false
 
   newSubject.value = {
+    creator_id: '',
     title: '',
     course_id: ''
   }

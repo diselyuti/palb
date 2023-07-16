@@ -113,13 +113,15 @@ onUnmounted(() => {
 
 const addCoursePopup = ref(false)
 const newCourse = ref<ICourse>({
-  title: ''
+  title: '',
+  creator_id: ''
 })
 
 const createNewCourse = async () => {
   addCoursePopup.value = false
   await createCourse(newCourse.value)
   newCourse.value = {
+    creator_id: '',
     title: ''
   }
 }

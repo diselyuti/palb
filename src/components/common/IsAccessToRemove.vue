@@ -28,7 +28,6 @@
           :to="{ name: 'login' }"
           type="button"
           class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          @click="open = false"
           >Авторизуватися</router-link
         >
       </div>
@@ -58,7 +57,7 @@ defineProps<{
 const { user } = useAuth()
 const { canDelete } = useAccess()
 
-const removePopup = ref<Boolean>(false)
+const removePopup = ref(false)
 </script>
 
 <style scoped lang="scss"></style>

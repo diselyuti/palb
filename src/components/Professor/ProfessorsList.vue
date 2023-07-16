@@ -88,6 +88,7 @@ onUnmounted(() => {
 
 const addProfessorPopup = ref(false)
 const newProfessor = ref<IProfessor>({
+  creator_id: '',
   subject_id: '3mMMo7VAV1BfRZBJ56xK',
   title: ''
 })

@@ -116,6 +116,7 @@ import { onMounted, ref } from 'vue'
 import router from '@/router'
 import { AUTH_ERROR_CODES_MAP } from '@/data/AuthErrorCodeMessages'
 import Footer from '@/components/common/DefaultFooter.vue'
+import { FirebaseError } from '@firebase/util'
 
 const schema = yup.object({
   email: yup.string().required('Обов`язкове поле').email('Невірний формат email'),
@@ -138,7 +139,10 @@ const onSubmit = async () => {
     errorMessage.value = ''
     await signInByEmailAndPassword(values.email, values.password)
   } catch (e) {
-    errorMessage.value = AUTH_ERROR_CODES_MAP[e.code] || e.message
+    if (e instanceof FirebaseError) {
+      // @ts-ignore
+      errorMessage.value = AUTH_ERROR_CODES_MAP[e.code] || e.message
+    }
   }
 }
 

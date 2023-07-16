@@ -64,6 +64,7 @@ const useVariant = () => {
 
   const createVariant = async (variant: IVariant | null) => {
     if (!variant) throw new Error('No variant provided')
+    if (!user.value) throw new Error('No user logged in')
 
     loadingVariants.value = true
 

@@ -57,6 +57,7 @@ const useDocument = () => {
   }
   const createDocument = async (document: IDocument | null) => {
     if (!document) throw new Error('No document provided')
+    if (!user.value) throw new Error('No user logged in')
 
     loadingDocuments.value = true
 

@@ -83,6 +83,7 @@ onUnmounted(() => {
 
 const addVariantPopup = ref(false)
 const newVariant = ref<IVariant>({
+  creator_id: '',
   professor_id: 'knvWepjCXRtgoxyxUvZk',
   title: ''
 })

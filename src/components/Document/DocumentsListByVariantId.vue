@@ -128,6 +128,8 @@ const documentFiles = ref<File[] | null>(null)
 const createNewDocuments = async () => {
   addDocumentPopup.value = false
 
+  if (!documentFiles.value) return
+
   const creating = documentFiles.value.map(async (file) => {
     return await createNewDocument(file)
   })
@@ -144,7 +146,7 @@ const createNewDocuments = async () => {
     loadingDocuments.value = false
   }
 }
-const createNewDocument = async (file) => {
+const createNewDocument = async (file: File) => {
   try {
     let document = {} as IDocument
     document.title = file.name

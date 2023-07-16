@@ -65,6 +65,7 @@ const useSubject = () => {
 
   const createSubject = async (subject: ISubject | null) => {
     if (!subject) throw new Error('No subject provided')
+    if (!user.value) throw new Error('No user logged in')
 
     loadingSubjects.value = true
 

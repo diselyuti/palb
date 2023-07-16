@@ -28,7 +28,6 @@
           :to="{ name: 'login' }"
           type="button"
           class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          @click="open = false"
           >Авторизуватися</router-link
         >
       </div>
@@ -43,10 +42,11 @@ import { PlusCircleIcon } from '@heroicons/vue/24/outline'
 import ModalPopup from '@/components/common/ModalPopup.vue'
 import { AcademicCapIcon } from '@heroicons/vue/24/outline'
 import { DialogTitle } from '@headlessui/vue'
+import type { User } from '@firebase/auth'
 
 const { onAuthChanged } = useAuth()
 
-const user = ref(null)
+const user = ref<User | null>(null)
 const addPopup = ref(false)
 
 onAuthChanged((authUser) => {

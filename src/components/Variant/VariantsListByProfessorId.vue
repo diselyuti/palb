@@ -129,6 +129,7 @@ watch(
 )
 const addVariantPopup = ref(false)
 const newVariant = ref<IVariant>({
+  creator_id: '',
   title: '',
   professor_id: ''
 })
@@ -145,6 +146,7 @@ const createNewVariant = async () => {
   loadingVariants.value = false
 
   newVariant.value = {
+    creator_id: '',
     title: '',
     professor_id: ''
   }

@@ -101,6 +101,7 @@ onUnmounted(() => {
 
 const addDocumentPopup = ref(false)
 const newDocument = ref<IDocument>({
+  creator_id: '',
   variant_id: 'knvWepjCXRtgoxyxUvZk',
   title: '',
   file: null
@@ -115,6 +116,7 @@ const createNewDocument = async () => {
     console.error(e)
   } finally {
     newDocument.value = {
+      creator_id: '',
       variant_id: 'knvWepjCXRtgoxyxUvZk',
       title: '',
       file: null

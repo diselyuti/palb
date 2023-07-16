@@ -128,6 +128,7 @@ watch(
 )
 const addProfessorPopup = ref(false)
 const newProfessor = ref<IProfessor>({
+  creator_id: '',
   title: '',
   subject_id: ''
 })
@@ -144,6 +145,7 @@ const createNewProfessor = async () => {
   loadingProfessors.value = false
 
   newProfessor.value = {
+    creator_id: '',
     title: '',
     subject_id: ''
   }
