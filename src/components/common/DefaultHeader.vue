@@ -36,7 +36,7 @@
           :to="{ name: 'login' }"
           class="text-sm font-semibold leading-6 text-gray-900"
         >
-          Log in
+          Увійти
           <span aria-hidden="true">&rarr;</span>
         </router-link>
       </div>
@@ -65,7 +65,7 @@
               :to="{ name: 'login' }"
               class="text-sm font-semibold leading-6 text-gray-900"
             >
-              Log in
+              Увійти
               <span aria-hidden="true">&rarr;</span>
             </router-link>
           </div>
